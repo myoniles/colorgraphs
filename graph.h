@@ -1,8 +1,10 @@
 #include <vector>
+#include <time.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <random>
+#include <sstream>
 
 using namespace std;
 
@@ -20,8 +22,8 @@ class Node{
 			return connections;
 		}
 
-		void setColor(int color){
-			this->color = color;
+		void setColor(int c){
+			color = c;
 		}
 
 		int getColor(){
@@ -58,7 +60,34 @@ class Map{
 			initialize(n);
 		}
 
+		Map(std::string filename, bool color){
+			ifstream fille;
+			fille.open(filename);
+
+			std::string node;
+			while(getline(fille, node)){
+				int name, c, connection;
+				Node newNode(-1);
+				stringstream con(node);
+				if(color){
+					con >> name >> c;
+					//std::sscanf(node, "%d %d ", name, color);
+					newNode.setColor(c);
+				} else {
+					con >> name;
+					//std::sscanf(node, "%d ", name);
+				}
+				while (con >> connection){
+					newNode.connect(connection);
+				}
+				nodes.push_back(newNode);
+			}
+
+			fille.close();
+		}
+
 		void initialize(int n){
+			std::srand(time(NULL));
 			for( int i = 0; i < n; i++) {
 				Node newNode( std::rand() % 3 );
 				for (int j = 0; j < nodes.size(); j++){
@@ -93,5 +122,6 @@ class Map{
 			}
 			fille.close();
 		}
+
 
 };
