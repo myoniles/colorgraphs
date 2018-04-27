@@ -10,9 +10,9 @@ class User{
 		USERTYPE usertype;
 
 	public:
-		User(Map m, USERTYPE user){
+		User(User u, USERTYPE user){
 			// This option is used when the User is a verifier
-			map = m;
+			m;
 			usertype = user;
 		}
 
@@ -26,7 +26,7 @@ class User{
 			return usertype;
 		}
 
-		bool requestRound(User* prover, int NodeName1, int NodeName2){
+		bool requestRound(User* prover){
 			if (prover->getUserType() == USERTYPE::PROVE){
 				std::cout << "ERROR: Requesting another Verifier's information\n";
 				return false;
@@ -37,12 +37,23 @@ class User{
 
 			//TODO: Either generate two random ints in here given size of n
 			// Then return a bool if it goes well!
+			Map* recol = prover->commitToRecolor();
+			if (recol->getNodeColor() != recol->getNodeColor()) {
+				return true;
+			} else {
+				std::cout << "ERROR: Round failed!\n";
+				return false;
+			}
 
 		}
 
 		Map* commitToRecolor(){
-			int* scheme = schemas[rand() % 3];
+			int* scheme = schemas[rand() % 6];
 			Map* recol = new Map( map , scheme );
 			return recol;
+		}
+
+		Map* getNoColor(){
+			Map newMap = new Map(map);
 		}
 };

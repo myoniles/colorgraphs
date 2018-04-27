@@ -46,12 +46,14 @@ class Node{
 class Map{
 	private:
 		vector<Node> nodes;
+		int requested = 0;
 
 	public:
 		Map(){}
 
 		Map(Map m, int* scheme){
 			nodes = m.getNodes();
+			requested = 2;
 
 			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
 				(*it).setColor(scheme[(*it).getColor()]);
@@ -60,6 +62,13 @@ class Map{
 
 		Map(int n){
 			initialize(n);
+		}
+
+		Map(Map m){
+			nodes = m->getNodes();
+			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
+				(*it).setColor(-1);
+			}
 		}
 
 		Map(std::string filename, bool color){
@@ -102,9 +111,6 @@ class Map{
 			}
 		}
 
-		vector<Node> getNodes(){
-			return nodes;
-		}
 
 		void toFile(std::string filename, bool includeColor){
 			ofstream fille;
@@ -123,6 +129,19 @@ class Map{
 				fille << "\n";
 			}
 			fille.close();
+		}
+
+		int getNodeColor(int name){
+			if (requested > 0 ){
+				return nodes[name];
+			} else {
+				return -1;
+			}
+		}
+
+	protected:
+		vector<Node> getNodes(){
+			return nodes;
 		}
 };
 
