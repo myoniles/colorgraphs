@@ -6,6 +6,8 @@
 #include <random>
 #include <sstream>
 
+#ifndef NODEMAP
+#define NODEMAP
 using namespace std;
 
 class Node{
@@ -122,6 +124,6 @@ class Map{
 			}
 			fille.close();
 		}
-
-
 };
+
+#endif
