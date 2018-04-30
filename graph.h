@@ -64,8 +64,8 @@ class Map{
 			initialize(n);
 		}
 
-		Map(Map m){
-			nodes = m->getNodes();
+		Map(Map arg, bool color){
+			nodes = arg.getNodes();
 			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
 				(*it).setColor(-1);
 			}
@@ -111,6 +111,12 @@ class Map{
 			}
 		}
 
+		void randomize(){
+			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
+				(*it).setColor(rand()%3);
+			}
+		}
+
 
 		void toFile(std::string filename, bool includeColor){
 			ofstream fille;
@@ -133,16 +139,23 @@ class Map{
 
 		int getNodeColor(int name){
 			if (requested > 0 ){
-				return nodes[name];
+				return nodes[name].getColor();
 			} else {
 				return -1;
 			}
 		}
 
-	protected:
+		int size(){
+			return nodes.size();
+		}
+
+		Node operator[] (int i){
+			return nodes.at(i);
+		}
 		vector<Node> getNodes(){
 			return nodes;
 		}
+
 };
 
 #endif
