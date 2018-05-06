@@ -106,6 +106,10 @@ class Map{
 			return nodes;
 		}
 
+		int getSize(){
+			return nodes.size();
+		}
+
 		void toFile(std::string filename, bool includeColor){
 			ofstream fille;
 			fille.open(filename);

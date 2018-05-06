@@ -1,5 +1,8 @@
 #include "dialog.h"
 #include "ui_dialog.h"
+#include "graph.h"
+#include "user.h"
+
 
 Dialog::Dialog(QWidget *parent) :
     QDialog(parent),

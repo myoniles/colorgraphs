@@ -45,4 +45,8 @@ class User{
 			Map* recol = new Map( map , scheme );
 			return recol;
 		}
+
+		int getSize(){
+			return map.getSize();
+		}
 };
