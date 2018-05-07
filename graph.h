@@ -46,12 +46,14 @@ class Node{
 class Map{
 	private:
 		vector<Node> nodes;
+		int requested = 0;
 
 	public:
 		Map(){}
 
 		Map(Map m, int* scheme){
 			nodes = m.getNodes();
+			requested = 2;
 
 			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
 				(*it).setColor(scheme[(*it).getColor()]);
@@ -60,6 +62,13 @@ class Map{
 
 		Map(int n){
 			initialize(n);
+		}
+
+		Map(Map arg, bool color){
+			nodes = arg.getNodes();
+			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
+				(*it).setColor(-1);
+			}
 		}
 
 		Map(std::string filename, bool color){
@@ -102,8 +111,10 @@ class Map{
 			}
 		}
 
-		vector<Node> getNodes(){
-			return nodes;
+		void randomize(){
+			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
+				(*it).setColor(rand()%3);
+			}
 		}
 
 		int getSize(){
@@ -128,6 +139,26 @@ class Map{
 			}
 			fille.close();
 		}
+
+		int getNodeColor(int name){
+			if (requested > 0 ){
+				return nodes[name].getColor();
+			} else {
+				return -1;
+			}
+		}
+
+		int size(){
+			return nodes.size();
+		}
+
+		Node operator[] (int i){
+			return nodes.at(i);
+		}
+		vector<Node> getNodes(){
+			return nodes;
+		}
+
 };
 
 #endif

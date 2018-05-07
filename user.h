@@ -1,8 +1,11 @@
+#ifndef USERS
+#define USERS
+
 #include "graph.h"
 #include <iostream>
 
 enum USERTYPE{ PROVE, VERIFY, SNOOP };
-int schemas[][3] = {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
+
 
 class User{
 	private:
@@ -10,9 +13,9 @@ class User{
 		USERTYPE usertype;
 
 	public:
-		User(Map m, USERTYPE user){
+		User(User* u, USERTYPE user){
 			// This option is used when the User is a verifier
-			map = m;
+			map = *(u->getNoColor());
 			usertype = user;
 		}
 
@@ -26,8 +29,8 @@ class User{
 			return usertype;
 		}
 
-		bool requestRound(User* prover, int NodeName1, int NodeName2){
-			if (prover->getUserType() == USERTYPE::PROVE){
+		bool requestRound(User* prover){
+			if (prover->getUserType() == USERTYPE::VERIFY){
 				std::cout << "ERROR: Requesting another Verifier's information\n";
 				return false;
 			} else if (this->getUserType() != USERTYPE::VERIFY){
@@ -37,11 +40,21 @@ class User{
 
 			//TODO: Either generate two random ints in here given size of n
 			// Then return a bool if it goes well!
+			Map* recol = prover->commitToRecolor();
+			int checkNode1 =  rand() % map.size();
+			int checkNode2 = map[checkNode1].getConnections()[ rand() % map[checkNode1].getConnections().size()];
+			if (recol->getNodeColor(checkNode1) != recol->getNodeColor(checkNode2)) {
+				return true;
+			} else {
+				std::cout << "ERROR: Round failed!\n";
+				return false;
+			}
 
 		}
 
 		Map* commitToRecolor(){
-			int* scheme = schemas[rand() % 3];
+            int schemas[][3]= {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
+			int* scheme = schemas[rand() % 6];
 			Map* recol = new Map( map , scheme );
 			return recol;
 		}
@@ -49,4 +62,15 @@ class User{
 		int getSize(){
 			return map.getSize();
 		}
+
+		Map* getNoColor(){
+			Map* newMap = new Map(map, false);
+			return newMap;
+		}
+
+		void guess(){
+			map.randomize();
+		}
 };
+
+#endif 

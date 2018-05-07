@@ -18,16 +18,16 @@ class Dialog : public QDialog
 
 public:
     explicit Dialog(QWidget *parent = 0);
-    QGraphicsEllipseItem* MaptoArray(){
-        Map m(10);
-        QGraphicsEllipseItem arr[m.getSize()]= new QGraphicsEllipseItem[m.getSize()];
-        return arr;
-    }
     ~Dialog();
 
 private:
     Ui::Dialog *ui;
     QGraphicsScene* scene;
+    double toPolar(double start, double end);
+    void mapUser(User* u);
+    void connectNodes(User u);
+    void redrawLine();
+
 };
 
 #endif // DIALOG_H
