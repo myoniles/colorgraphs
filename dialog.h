@@ -31,3 +31,4 @@ private:
 };
 
 #endif // DIALOG_H
+

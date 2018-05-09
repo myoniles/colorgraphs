@@ -11,6 +11,9 @@ int main(){
 	User* ver = new User(prove, USERTYPE::VERIFY);
 	User* snoop = new User(prove, USERTYPE::SNOOP);
 
+	Map* example = new Map(1000);
+	example->toFile("example.map", true);
+
 	for ( int i = 0; i < 10000; i ++ ) {
 		if (!(ver->requestRound(prove))){
 			std::cout<<"darn";

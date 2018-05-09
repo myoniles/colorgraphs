@@ -60,10 +60,6 @@ void Dialog::connectNodes(User u){
     }
 }
 
-void Dialog::redrawLine(){
-
-
-}
 
 
 Dialog::~Dialog()
