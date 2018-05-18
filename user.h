@@ -52,6 +52,25 @@ class User{
 
 		}
 
+        bool requestRound(User* prover, int checkNode1, int checkNode2){
+            if (prover->getUserType() == USERTYPE::VERIFY){
+                std::cout << "ERROR: Requesting another Verifier's information\n";
+                return false;
+            } else if (this->getUserType() != USERTYPE::VERIFY){
+                std::cout <<"ERROR: We'll be asking the questions here!\n";
+                return false;
+            }
+
+            Map* recol = prover->commitToRecolor();
+            if (recol->getNodeColor(checkNode1) != recol->getNodeColor(checkNode2)) {
+                return true;
+            } else {
+                std::cout << "ERROR: Round failed!\n";
+                return false;
+            }
+
+        }
+
 		Map* commitToRecolor(){
             int schemas[][3]= {{0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
 			int* scheme = schemas[rand() % 6];

@@ -17,6 +17,7 @@ SOURCES += main.cpp\
 
 HEADERS  += dialog.h \
     graph.h \
-    user.h
+    user.h \
+    mynode.h
 
 FORMS    += dialog.ui
