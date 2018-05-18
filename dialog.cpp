@@ -25,7 +25,7 @@ Dialog::Dialog(QWidget *parent) :
     ui->graphicsView->setScene(scene);
 
     // Create test users
-    prove = new User(5);
+    prove = new User(50);
     verify = new User(prove, VERIFY);
     status = ui->status;
 
@@ -44,7 +44,7 @@ double Dialog::toPolar(double start, double end){
 
 void Dialog::mapUser(User* u, int offset){
     int nodeNum = u->getSize();
-    MyNode *nodeList[nodeNum] = {NULL};
+
     Map* toVis;
     if( u->getUserType() == VERIFY ){
         toVis = u->getNoColor();
@@ -54,7 +54,7 @@ void Dialog::mapUser(User* u, int offset){
 
     QGraphicsEllipseItem* newNode;
     for ( int i = 0; i < nodeNum; i++){
-        MyNode* newNode = new MyNode(QRectF(cos(toPolar(i,nodeNum))*nodeNum + offset, sin(toPolar(i, nodeNum))* nodeNum, 10, 10), this);
+        MyNode* newNode = new MyNode(QRectF(cos(toPolar(i,nodeNum))*nodeNum + offset, sin(toPolar(i, nodeNum))* nodeNum, 10, 10), toVis, i, this);
 
         if(toVis->getNodeColor(i) == -1){
             newNode->setBrush(grayBrush);
@@ -62,22 +62,6 @@ void Dialog::mapUser(User* u, int offset){
         newNode->setBrush(colorScheme[toVis->getNodeColor(i)]);
         }
         scene->addItem(newNode);
-
-        // Traverse through all previous Nodes, set itself as the Node 1
-        // This unfortunately makes the function O(n^2)
-
-        /*vector<Node> connections = toVis->getNodes();
-        for( int j = 0; i < connections.size(); j++){
-            if(j >= i){
-                break;
-            } else {
-                QGraphicsLineItem* line = scene->addLine(nodeList[j]->pos().x(), nodeList[j]->pos().y(),cos(toPolar(i,nodeNum))*nodeNum, sin(toPolar(i, nodeNum))* nodeNum, blackPen);
-                newNode->drawLine(line, true);
-                nodeList[j]->drawLine(line, false);
-            }
-
-        } */
-        nodeList[i] = newNode;
     }
     return;
 }
@@ -147,7 +131,13 @@ QGraphicsLineItem* Dialog::connectNodes(int node1, int node2){
 QGraphicsLineItem* Dialog::connectNodes(QPointF p1, int node2){
     Map* m = prove->getNoColor();
     int nodeNum = m->getSize();
-    int offset = 50;
+    int offset;
+    if(p1.x() > 0){
+        offset = 100;
+    } else {
+        offset = -100;
+    }
+
     int x1 = p1.x();
     int x2 = cos(toPolar(node2,nodeNum))*nodeNum + offset;
     int y1 = p1.y();
