@@ -12,6 +12,8 @@
 #include "graph.h"
 #include "user.h"
 
+
+
 namespace Ui {
 class Dialog;
 }
@@ -23,13 +25,14 @@ class Dialog : public QDialog
 public:
     explicit Dialog(QWidget *parent = 0);
     double toPolar(double start, double end);
-    QGraphicsLineItem* connectNodes(int node1, int node2);
+    QGraphicsLineItem* connectNodes(int node1, int node2, int offset);
     QGraphicsLineItem* connectNodes(QPointF p1, int node2);
     ~Dialog();
 
    public slots:
     bool testUser();
     void quickTest();
+    void testSpoof();
 
 private:
     Ui::Dialog *ui;
@@ -37,9 +40,9 @@ private:
     User* prove;
     User* verify;
     QLabel* status;
+    QGraphicsLineItem* lastTestLine;
     void mapUser(User* u, int offset);
-    int proveOffset = 50;
-    int verifyOffset = -50;
+
 
 
 };

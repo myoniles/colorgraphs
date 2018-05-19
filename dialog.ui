@@ -34,14 +34,21 @@
    <item>
     <widget class="QPushButton" name="pushButton_2">
      <property name="text">
-      <string>Test</string>
+      <string>Test Prover</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButton_3">
+     <property name="text">
+      <string>Run 100 Tests (Spoofer)</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="pushButton">
      <property name="text">
-      <string>Run 100 Tests</string>
+      <string>Run 100 Tests (Prover)</string>
      </property>
     </widget>
    </item>
