@@ -34,7 +34,7 @@ public:
     {
         if (Dialog->objectName().isEmpty())
             Dialog->setObjectName(QStringLiteral("Dialog"));
-        Dialog->resize(400, 300);
+        Dialog->resize(600, 500);
         verticalLayout_2 = new QVBoxLayout(Dialog);
         verticalLayout_2->setSpacing(6);
         verticalLayout_2->setContentsMargins(11, 11, 11, 11);

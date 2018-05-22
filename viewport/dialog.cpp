@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <unistd.h>
+#include <QtWidgets>
 
 //Define some colors for the graph. Gray will define unknown colors
 QBrush colorScheme[3] = {QBrush(Qt::red), QBrush(Qt::blue), QBrush(Qt::green)};
@@ -27,6 +28,26 @@ Dialog::Dialog(QWidget *parent) :
 }
 
 void Dialog::fromFileButtonPress(){
+    QDialog heck(this);
+    QFormLayout form(&heck);
+    form.addRow(new QLabel("Save Graph"));
+
+    //Add options
+    QLineEdit *userField = new QLineEdit(&heck);
+    form.addRow("Filename:", userField);
+
+    // Add some buttons
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &heck);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &heck, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &heck, SLOT(reject()));
+
+    if (heck.exec() == QDialog::Accepted){
+        string filename = userField->text().toLatin1().data();
+        m = new Map(filename, true);
+        updateMap();
+    }
+
     return;
 }
 
@@ -37,12 +58,33 @@ void Dialog::genGraphButtonPress(){
 }
 
 void Dialog::saveButtonPress(){
+    QDialog heck(this);
+    QFormLayout form(&heck);
+    form.addRow(new QLabel("Save Graph"));
+
+    //Add options
+    QLineEdit *userField = new QLineEdit(&heck);
+    form.addRow("Filename:", userField);
+
+    // Add some buttons
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &heck);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &heck, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &heck, SLOT(reject()));
+
+    if (heck.exec() == QDialog::Accepted){
+        string filename = userField->text().toLatin1().data();
+        m->toFile(filename, true);
+
+    }
 
     return;
 }
 
 QPointF Dialog::getNodePos(int n){
-    return mapNodes->at(n)->pos();
+    QPoint offset(mapNodes->at(n)->rect().width(), mapNodes->at(n)->rect().width());
+
+    return mapNodes->at(n)->pos() + offset;
 }
 
 QGraphicsLineItem* Dialog::connectNodes(int node1, int node2){
@@ -52,6 +94,7 @@ QGraphicsLineItem* Dialog::connectNodes(int node1, int node2){
     double y2 = getNodePos(node2).y();
     return scene->addLine(x1,y1,x2,y2);
 }
+
 
 void Dialog::updateMap(){
     // delete old graph
@@ -66,7 +109,6 @@ void Dialog::updateMap(){
     int nodeNum = m->size();
     for ( int i = 0; i < nodeNum; i++){
         MyNode* newNode = new MyNode(QRectF(cos(toPolar(i,nodeNum))*nodeNum , sin(toPolar(i, nodeNum))* nodeNum, 10, 10), m, i, this);
-        qDebug() << m->getNodeColor(i);
         newNode->setBrush(colorScheme[m->getNodeColor(i)]);
         mapNodes->push_back(newNode);
         scene->addItem(newNode);

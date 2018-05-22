@@ -53,6 +53,19 @@ public:
     }
 
 
+
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value){
+        if (change == ItemPositionChange && scene()){
+            for ( int i = lines->size() - 1; i >= 0; i--){
+                QPoint offset(rect().width(), rect().height());
+                QLineF update( value.toPointF() + offset, lines->at(i)->line().p2());
+                lines->at(i)->setLine(update);
+            }
+        }
+        return QGraphicsEllipseItem::itemChange(change, value);
+    }
+
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event){
         for ( int i = lines->size() - 1; i >= 0; i--){
             delete lines->at(i);
