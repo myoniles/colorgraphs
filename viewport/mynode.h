@@ -34,11 +34,30 @@ public:
         nodeNum = n;
         m = refMap;
         d = dia;
+        lines = new vector<QGraphicsLineItem*>;
+    }
+
+    void drawLines(){
+
+        int heck = lines->size() - 1;
+
+        for ( int j = heck; j >= 0; j--){
+            delete lines->at(j);
+        }
+
+        lines = new vector<QGraphicsLineItem*>;
+
+        vector<int> connections = m->getNodes().at(nodeNum).getConnections();
+
+        for ( int i = 0; i < connections.size(); i++){
+
+            lines->push_back(d->connectNodes(nodeNum, connections[i]));
+        }
     }
 
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event){
-
+        /*
         QGraphicsScene* scene = this->scene();
         lines = new vector<QGraphicsLineItem*>;
 
@@ -48,7 +67,7 @@ public:
 
             lines->push_back(d->connectNodes(nodeNum, connections[i]));
         }
-
+        */
         return update();
     }
 
@@ -62,14 +81,18 @@ public:
                 QLineF update( value.toPointF() + offset, lines->at(i)->line().p2());
                 lines->at(i)->setLine(update);
             }
+            d->updateLines();
         }
+
         return QGraphicsEllipseItem::itemChange(change, value);
     }
 
     void hoverLeaveEvent(QGraphicsSceneHoverEvent* event){
+        /*
         for ( int i = lines->size() - 1; i >= 0; i--){
             delete lines->at(i);
         }
+        */
         return update();
     }
 

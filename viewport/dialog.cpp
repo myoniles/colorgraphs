@@ -113,6 +113,15 @@ void Dialog::updateMap(){
         mapNodes->push_back(newNode);
         scene->addItem(newNode);
     }
+    updateLines();
+
+}
+
+void Dialog::updateLines(){
+    int nodeNum = m->size();
+    for (int j = 0; j < nodeNum; j++){
+        mapNodes->at(j)->drawLines();
+    }
 }
 
 double Dialog::toPolar(double start, double end){

@@ -23,6 +23,7 @@ class Dialog : public QDialog
 public:
     explicit Dialog(QWidget *parent = 0);
     QGraphicsLineItem* connectNodes(int node1, int node2);
+    void updateLines();
     ~Dialog();
 
 public slots:
@@ -37,6 +38,7 @@ private:
     double toPolar(double start, double end);
     QPointF getNodePos(int n);
     void updateMap();
+
 
 };
 
