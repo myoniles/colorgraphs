@@ -29,16 +29,21 @@ Dialog::Dialog(QWidget *parent) :
     verify = new User(prove, VERIFY);
     status = ui->status;
 
+    // init status
     status->setText("Status: Idle");
 
+    // create the maps!
     mapUser(prove, -200 * 2);
     mapUser(verify, 200 * 2);
 
+    // House keeping for the buttons
     connect( ui->pushButton_2, SIGNAL (released()), this, SLOT (testUser()) );
     connect ( ui->pushButton, SIGNAL (released()), this, SLOT (quickTest()));
     connect(ui->pushButton_3, SIGNAL (released()), this, SLOT(testSpoof()));
 }
 
+
+// simple mapping to polar
 double Dialog::toPolar(double start, double end){
     return (start)/(end) *(2 * 3.141492);
 }
@@ -54,31 +59,38 @@ void Dialog::mapUser(User* u, int offset){
     }
 
     QGraphicsEllipseItem* newNode;
+    // Create a new node mapped to a polar coordinate based on the size of the graph
     for ( int i = 0; i < nodeNum; i++){
         MyNode* newNode = new MyNode(QRectF(cos(toPolar(i,nodeNum))*nodeNum + offset, sin(toPolar(i, nodeNum))* nodeNum, 10, 10), toVis, i, this);
 
+        // Handle the node's color
         if(toVis->getNodeColor(i) == -1){
             newNode->setBrush(grayBrush);
         } else {
         newNode->setBrush(colorScheme[toVis->getNodeColor(i)]);
         }
+        // draw to the scene
         scene->addItem(newNode);
     }
     return;
 }
 
 bool Dialog::testUser(){
+    // Get rid of any line that was already there from a previous test
     if(lastTestLine != NULL){
         delete lastTestLine;
     }
+    // If there is a mishap in the comparisons of graphs, exit
     if ( prove->getSize() != verify->getSize()){
         return false;
     }
 
+    // Get a recoloring, get a random node, then a random node connected to said node
     Map* recol = prove->commitToRecolor();
     int checkNode1 =  rand() % recol->size();
     int checkNode2 = recol[0][checkNode1].getConnections()[ rand() % recol[0][checkNode1].getConnections().size()];
 
+    // Then make a call comparing those two nodes
     bool passed = verify->requestRound(prove, checkNode1, checkNode2);
 
     if (!passed){
@@ -98,12 +110,14 @@ void Dialog::testSpoof(){
 
     // Draw the Graph
     User* snoop = new User(prove, USERTYPE::SNOOP);
+    // Honestly He could do a better job at guessing
     snoop->guess();
     Map* toVis = snoop->commitToRecolor();
     int nodeNum = toVis->size();
+    // For node in the graph
     for ( int i = 0; i < nodeNum; i++){
+        // map to polar
         MyNode* newNode = new MyNode(QRectF(cos(toPolar(i,nodeNum))*nodeNum , sin(toPolar(i, nodeNum))* nodeNum, 10, 10), toVis, i, this);
-
         if(toVis->getNodeColor(i) == -1){
             newNode->setBrush(grayBrush);
         } else {
@@ -136,6 +150,7 @@ void Dialog::testSpoof(){
     return;
 }
 
+// will only compare 100 nodes
 void Dialog::quickTest(){
 
     if ( prove->getSize() != verify->getSize()){
