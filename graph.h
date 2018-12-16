@@ -1,4 +1,5 @@
 #include <vector>
+#include <queue>
 #include <time.h>
 #include <iostream>
 #include <fstream>
@@ -53,6 +54,7 @@ class Map{
 	private:
 		// list of nodes
 		vector<Node> nodes;
+		unsigned int edgeNum;
 		// requested denotes the number of nodes requested
 		// this is important so that a recoloring cannot be reused
 		int requested = 0;
@@ -71,6 +73,7 @@ class Map{
 		}
 
 		Map(int n){
+			edgeNum = 0;
 			initialize(n);
 		}
 
@@ -116,6 +119,7 @@ class Map{
 					if (newNode.canConnect(nodes[j]) && std::rand() % 2){
 						newNode.connect(j);
 						nodes[j].connect(i);
+						edgeNum++;
 					}
 				}
 				nodes.push_back(newNode);
@@ -133,8 +137,27 @@ class Map{
 		// TODO: BFS on graph starting at node 0
 		// alternate colors each iteration,
 		// if there is a conflict, either try to solve it by moving to the third color
-		// if that does not worl, leave it and hope nobody sees it
+		// if that does not work, leave it and hope nobody sees it
+		// THIS WILL ONLY WORK ON UNCOLORED GRAPHS
 		void bfsGuess(){
+			// start at node 0
+			std::queue<int> q;
+			int currCol = 0;
+			q.push(0);
+			nodes[0].setColor(currCol++);
+
+			while( !q.empty() ){
+				// for a node to be in here it should already be colored
+				int nodeName = q.pop();
+				vector<int> con = nodes[i].getConnections();
+				for (std::vector<int>::iterator it = con.begin(); it != con.end(); ++it){
+					if (nodes[*it].getColor != -1){
+						nodes[(*it)].setColor(currCol);
+						q.push(*it);
+					}
+					currCol =( currCol + 1 ) % 3;
+				}
+			}
 		}
 
 		int getSize(){
@@ -165,16 +188,33 @@ class Map{
 			fille.close();
 		}
 
-		// TODO: implement a file writing function as follows:
 		// line 1: (Number of nodes) (number of edges)
 		// line 2 - n+1: (node_1) (node_2)
-		void saveGraph(){
+		void saveGraph(std::string filename){
+			ofstream fille;
+			fille.open(filename);
 
+			fille << nodes.size() << " ";
+			fille << edgeNum << "\n";
+
+			for ( int i = 0; i < nodes.size(); i++ ) {
+				vector<int> con = nodes[i].getConnections();
+				for (std::vector<int>::iterator it = con.begin(); it != con.end(); ++it){
+						fille << i << " ";
+						fille << *it << "\n";
+					}
+			}
 		}
 
-		// TODO: implement a file writing function as follows:
 		// For N lines: (node_name) (color)
-		void saveColoring(){
+		void saveColoring(std::string filename){
+			ofstream fille;
+			fille.open(filename);
+
+			for ( int i = 0; i < nodes.size(); i++ ) {
+				fille << i << " ";
+				fille << nodes[i].getColor() << "\n";
+			}
 
 		}
 
