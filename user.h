@@ -88,8 +88,8 @@ class User{
 		}
 
 		void guess(){
-			map.randomize();
+			map.bfsGuess();
 		}
 };
 
-#endif 
+#endif

@@ -126,6 +126,12 @@ class Map{
 			}
 		}
 
+		void noColor(){
+			for(std::vector<Node>::iterator it = nodes.begin(); it != nodes.end(); ++it){
+				(*it).setColor(-1);
+			}
+		}
+
 
 		// r/notmyjob: I solved the graph boss!
 		void randomize(){
@@ -134,7 +140,7 @@ class Map{
 			}
 		}
 
-		// TODO: BFS on graph starting at node 0
+		// BFS on graph starting at node 0
 		// alternate colors each iteration,
 		// if there is a conflict, either try to solve it by moving to the third color
 		// if that does not work, leave it and hope nobody sees it
@@ -146,17 +152,32 @@ class Map{
 			q.push(0);
 			nodes[0].setColor(currCol++);
 
+			// Starting current color as 1
+			// We will guess wither color 0 or 1
+			// if a node is pointed to by both, we swap to 2
 			while( !q.empty() ){
 				// for a node to be in here it should already be colored
-				int nodeName = q.pop();
-				vector<int> con = nodes[i].getConnections();
+				int nodeName = q.front();
+				vector<int> con = nodes[nodeName].getConnections();
+				// recolor connections
 				for (std::vector<int>::iterator it = con.begin(); it != con.end(); ++it){
-					if (nodes[*it].getColor != -1){
+					// If the node has not been visited
+					if (nodes[*it].getColor() == -1){
+						// check if the node has conflicting connections
+						vector<int> conj = nodes[*it].getConnections();
+						for (std::vector<int>::iterator itj = conj.begin(); itj != conj.end(); ++itj){
+							if ((currCol+1)%2 == nodes[*itj].getColor() && nodes[*itj].getColor() != 2  ){
+								nodes[(*it)].setColor(2);
+								q.push(*it);
+								continue;
+							}
+						}
 						nodes[(*it)].setColor(currCol);
 						q.push(*it);
 					}
-					currCol =( currCol + 1 ) % 3;
+					currCol =( currCol + 1 ) % 2;
 				}
+				q.pop();
 			}
 		}
 
@@ -236,6 +257,7 @@ class Map{
 		vector<Node> getNodes(){
 			return nodes;
 		}
+
 
 };
 

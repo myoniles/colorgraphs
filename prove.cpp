@@ -12,7 +12,6 @@ int main(){
 	User* snoop = new User(prove, USERTYPE::SNOOP);
 
 	Map* example = new Map(1000);
-	example->toFile("example.map", true);
 
 	for ( int i = 0; i < 10000; i ++ ) {
 		if (!(ver->requestRound(prove))){
@@ -25,6 +24,11 @@ int main(){
 
 	cout << "All rounds passed!\n";
 
+	Map* bfsExample= new Map(5);
+	bfsExample->noColor();
+	bfsExample->bfsGuess();
+	bfsExample->saveGraph("bfs.map");
+	bfsExample->saveColoring("bfs.coloring");
 
 	snoop->guess();
 	for ( int i = 0; i < 10000; i ++ ) {
@@ -35,6 +39,7 @@ int main(){
 			std::cout<< "round " << i << " passed!\n";
 		}
 	}
+
 	cout << "All rounds passed!\n";
 	return 0;
 }
