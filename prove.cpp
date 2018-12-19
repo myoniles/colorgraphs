@@ -29,6 +29,7 @@ int main(){
 	bfsExample->bfsGuess();
 	bfsExample->saveGraph("bfs.map");
 	bfsExample->saveColoring("bfs.coloring");
+	bfsExample->toComprehensiveFile("bfs.comp", true);
 
 	snoop->guess();
 	for ( int i = 0; i < 10000; i ++ ) {

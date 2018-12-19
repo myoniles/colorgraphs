@@ -1,4 +1,5 @@
 #include <vector>
+#include <list>
 #include <queue>
 #include <time.h>
 #include <iostream>
@@ -148,16 +149,20 @@ class Map{
 		void bfsGuess(){
 			// start at node 0
 			std::queue<int> q;
-			int currCol = 0;
-			q.push(0);
-			nodes[0].setColor(currCol++);
+			std::list<int> l;
+			for (int i =0; i < nodes.size(); i++) l.push_back(i);
 
 			// Starting current color as 1
 			// We will guess wither color 0 or 1
 			// if a node is pointed to by both, we swap to 2
+			while( !l.empty() ){
+				int currCol = 0;
+				q.push(l.front());
+				nodes[l.front()].setColor(currCol++);
 			while( !q.empty() ){
 				// for a node to be in here it should already be colored
 				int nodeName = q.front();
+				l.remove(nodeName);
 				vector<int> con = nodes[nodeName].getConnections();
 				// recolor connections
 				for (std::vector<int>::iterator it = con.begin(); it != con.end(); ++it){
@@ -165,19 +170,23 @@ class Map{
 					if (nodes[*it].getColor() == -1){
 						// check if the node has conflicting connections
 						vector<int> conj = nodes[*it].getConnections();
-						for (std::vector<int>::iterator itj = conj.begin(); itj != conj.end(); ++itj){
-							if ((currCol+1)%2 == nodes[*itj].getColor() && nodes[*itj].getColor() != 2  ){
-								nodes[(*it)].setColor(2);
-								q.push(*it);
-								continue;
-							}
-						}
+						// By default color it the currCol
 						nodes[(*it)].setColor(currCol);
 						q.push(*it);
+						// If there is a problem with the connections, set it as 2
+						for (std::vector<int>::iterator itj = conj.begin(); itj != conj.end(); ++itj){
+							if(nodes[*itj].getColor() == -1)
+								continue;
+							if (currCol == nodes[*itj].getColor() && nodes[*itj].getColor() != 2  ){
+								nodes[(*it)].setColor(2);
+								break;
+							}
+						}
 					}
-					currCol =( currCol + 1 ) % 2;
 				}
+				currCol =( currCol + 1 ) % 2;
 				q.pop();
+			}
 			}
 		}
 

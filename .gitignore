@@ -4,3 +4,7 @@ graphViewPort
 viewport
 build-graphs*
 *.pro.user
+
+*.map
+*.coloring
+*.comp
